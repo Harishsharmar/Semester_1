@@ -1,0 +1,3 @@
+Hello World.This is Harish.
+Harish is studying BDA in Manipal.
+MSIS Manipal is where Harish's classes are held.
