@@ -1,0 +1,71 @@
+# depslib dependency file v1.0
+1634107814 source:c:\users\msis\desktop\harish\ads lab\assignment 13-10-2021\assignment 13-oct\main.c
+	<stdio.h>
+	<stdlib.h>
+
+1634107804 source:c:\users\msis\desktop\harish\ads lab\assignment 13-10-2021\assignment 13-oct\problem_1.c
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+
+1634107804 source:c:\users\msis\desktop\harish\ads lab\assignment 13-10-2021\assignment 13-oct\problem_2.c
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+
+1634326685 source:c:\users\hari\desktop\assignment 13-oct\problem_1.c
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+
+1634454472 source:c:\users\hari\desktop\assignment 13-oct\main.c
+	<stdio.h>
+	<stdlib.h>
+	<assert.h>
+
+1634326895 source:c:\users\hari\desktop\assignment 13-oct\problem_2.c
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+
+1634440541 source:c:\users\hari\desktop\assignment 13-oct\problem_3.c
+	<stdio.h>
+	<stdlib.h>
+
+1634453127 source:c:\users\hari\desktop\assignment 13-oct\problem_4.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1634454423 source:c:\users\hari\desktop\assignment 13-oct\problem_5.c
+	<stdio.h>
+	<stdlib.h>
+
+1635442844 source:c:\users\hari\desktop\1st semester\ads - algorithms & ds\ads lab assignments\ads assignment 1 - 13-oct\problem_1.c
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+
+1635442844 source:c:\users\hari\desktop\1st semester\ads - algorithms & ds\ads lab assignments\ads assignment 1 - 13-oct\problem_2.c
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+
+1635442844 source:c:\users\hari\desktop\1st semester\ads - algorithms & ds\ads lab assignments\ads assignment 1 - 13-oct\problem_3.c
+	<stdio.h>
+	<stdlib.h>
+
+1635442844 source:c:\users\hari\desktop\1st semester\ads - algorithms & ds\ads lab assignments\ads assignment 1 - 13-oct\problem_4.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1635442844 source:c:\users\hari\desktop\1st semester\ads - algorithms & ds\ads lab assignments\ads assignment 1 - 13-oct\problem_5.c
+	<stdio.h>
+	<stdlib.h>
+
+1635442844 source:c:\users\hari\desktop\1st semester\ads - algorithms & ds\ads lab assignments\ads assignment 1 - 13-oct\main.c
+	<stdio.h>
+	<stdlib.h>
+	<assert.h>
+
