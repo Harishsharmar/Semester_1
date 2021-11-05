@@ -1,0 +1,163 @@
+Command 1 : hdfs dfs -ls <path>
+sois@sois-VirtualBox:~$ hdfs dfs -ls /
+Found 8 items
+drwxr-xr-x   - sois supergroup          0 2021-10-29 14:36 /Assignment1Dir
+drwxr-xr-x   - sois supergroup          0 2021-10-25 10:57 /data_retail_db
+drwxr-xr-x   - sois supergroup          0 2021-10-18 09:58 /firstdir
+drwxr-xr-x   - sois supergroup          0 2021-10-25 11:52 /partial1_db
+drwxr-xr-x   - sois supergroup          0 2021-10-25 11:36 /partial_db
+drwxr-xr-x   - sois supergroup          0 2021-10-25 10:27 /test_dir
+drwxrwxr-x   - sois supergroup          0 2021-01-15 16:51 /tmp
+drwxr-xr-x   - sois supergroup          0 2021-01-15 16:26 /user
+---------------------------------------------------------------------
+Command 2 : hdfs dfs -mkdir <folder_name>
+sois@sois-VirtualBox:~$ hdfs dfs -mkdir /test1Dir
+sois@sois-VirtualBox:~$ hdfs dfs -ls /
+Found 9 items
+drwxr-xr-x   - sois supergroup          0 2021-10-29 14:36 /Assignment1Dir
+drwxr-xr-x   - sois supergroup          0 2021-10-25 10:57 /data_retail_db
+drwxr-xr-x   - sois supergroup          0 2021-10-18 09:58 /firstdir
+drwxr-xr-x   - sois supergroup          0 2021-10-25 11:52 /partial1_db
+drwxr-xr-x   - sois supergroup          0 2021-10-25 11:36 /partial_db
+drwxr-xr-x   - sois supergroup          0 2021-10-29 14:46 /test1Dir
+drwxr-xr-x   - sois supergroup          0 2021-10-25 10:27 /test_dir
+drwxrwxr-x   - sois supergroup          0 2021-01-15 16:51 /tmp
+drwxr-xr-x   - sois supergroup          0 2021-01-15 16:26 /user
+--------------------------------------------------------------------------
+Command 3 : hdfs dfs -touchz <file_path>
+sois@sois-VirtualBox:~$ hdfs dfs -touchz /test1Dir/new.txt
+sois@sois-VirtualBox:~$ hdfs dfs -ls /test1Dir
+Found 1 items
+-rw-r--r--   1 sois supergroup          0 2021-10-29 14:49 /test1Dir/new.txt
+--------------------------------------------------------------------------
+Command 4 : copyFromLocal (put)
+sois@sois-VirtualBox:~$ ls
+d1         Downloads            input         products.java  Videos
+d2         eclipse-workspace    metastore_db  Public
+derby.log  examples.desktop     Music         sample.txt
+Desktop    get-pip.py           orders.java   snap
+Documents  hadoop-3.2.1.tar.gz  Pictures      Templates
+
+
+sois@sois-VirtualBox:~$ hdfs dfs -copyFromLocal sample.txt /test1Dir
+2021-10-29 14:53:17,675 INFO sasl.SaslDataTransferClient: SASL encryption trust check: localHostTrusted = false, remoteHostTrusted = false
+sois@sois-VirtualBox:~$ hdfs dfs -ls /test1Dir
+Found 2 items
+-rw-r--r--   1 sois supergroup          0 2021-10-29 14:49 /test1Dir/new.txt
+-rw-r--r--   1 sois supergroup         12 2021-10-29 14:53 /test1Dir/sample.txt
+sois@sois-VirtualBox:~$ 
+--------------------------------------------------------------------------
+
+Command 5 : cat
+sois@sois-VirtualBox:~$ hdfs dfs -cat /test1Dir/sample.txt
+2021-10-29 14:55:31,258 INFO sasl.SaslDataTransferClient: SASL encryption trust check: localHostTrusted = false, remoteHostTrusted = false
+Hello World
+-------------------------------------------------------------------------
+
+Command 6 : copyToLocal (get)
+sois@sois-VirtualBox:~$ hdfs dfs -copyToLocal /test1Dir/sample.txt copy_sample.txt
+2021-11-04 13:58:24,004 INFO sasl.SaslDataTransferClient: SASL encryption trust check: localHostTrusted = false, remoteHostTrusted = false
+sois@sois-VirtualBox:~$ ls
+copy_sample.txt  Downloads            metastore_db   sample.txt
+d1               eclipse-workspace    Music          snap
+d2               examples.desktop     orders.java    Templates
+derby.log        get-pip.py           Pictures       Videos
+Desktop          hadoop-3.2.1.tar.gz  products.java
+Documents        input                Public
+---------------------------------------------------------------------------
+
+Command 7 : moveFromLocal
+sois@sois-VirtualBox:~$ hdfs dfs -moveFromLocal ./copy_sample.txt /test1Dir
+2021-11-04 14:02:24,179 INFO sasl.SaslDataTransferClient: SASL encryption trust check: localHostTrusted = false, remoteHostTrusted = false
+sois@sois-VirtualBox:~$ hdfs dfs -ls /test1Dir
+Found 3 items
+-rw-r--r--   1 sois supergroup         12 2021-11-04 14:02 /test1Dir/copy_sample.txt
+-rw-r--r--   1 sois supergroup          0 2021-10-29 14:49 /test1Dir/new.txt
+-rw-r--r--   1 sois supergroup         12 2021-10-29 14:53 /test1Dir/sample.txt
+sois@sois-VirtualBox:~$ 
+----------------------------------------------------------------------------
+
+Command 8 : hdfs dfs -cp <src(on hdfs)> <dest(on hdfs)>
+
+         ------------Create 'backup' folder -----------------------
+sois@sois-VirtualBox:~$ hdfs dfs -ls /test1Dir
+Found 3 items
+-rw-r--r--   1 sois supergroup         12 2021-11-04 14:02 /test1Dir/copy_sample.txt
+-rw-r--r--   1 sois supergroup          0 2021-10-29 14:49 /test1Dir/new.txt
+-rw-r--r--   1 sois supergroup         12 2021-10-29 14:53 /test1Dir/sample.txt
+sois@sois-VirtualBox:~$ hdfs dfs -mkdir /test1Dir/backup
+sois@sois-VirtualBox:~$ hdfs dfs -ls /test1Dir
+Found 4 items
+drwxr-xr-x   - sois supergroup          0 2021-11-04 14:38 /test1Dir/backup
+-rw-r--r--   1 sois supergroup         12 2021-11-04 14:02 /test1Dir/copy_sample.txt
+-rw-r--r--   1 sois supergroup          0 2021-10-29 14:49 /test1Dir/new.txt
+-rw-r--r--   1 sois supergroup         12 2021-10-29 14:53 /test1Dir/sample.txt
+
+        ---------------perform cp -------------------
+sois@sois-VirtualBox:~$ hdfs dfs -cp /test1Dir/copy_sample.txt /test1Dir/backup 
+2021-11-04 14:41:23,252 INFO sasl.SaslDataTransferClient: SASL encryption trust check: localHostTrusted = false, remoteHostTrusted = false
+2021-11-04 14:41:23,468 INFO sasl.SaslDataTransferClient: SASL encryption trust check: localHostTrusted = false, remoteHostTrusted = false
+
+sois@sois-VirtualBox:~$ hdfs dfs -ls /test1Dir/backup
+Found 1 items
+-rw-r--r--   1 sois supergroup         12 2021-11-04 14:41 /test1Dir/backup/copy_sample.txt
+
+-------------------------------------------------------------------------
+Command 9 : hdfs dfs -mv <src(on hdfs)> <dest(on hdfs)>
+
+sois@sois-VirtualBox:~$ hdfs dfs -mv /test1Dir/sample.txt /test1Dir/backup
+sois@sois-VirtualBox:~$ hdfs dfs -ls /test1Dir
+Found 3 items
+drwxr-xr-x   - sois supergroup          0 2021-11-04 14:48 /test1Dir/backup
+-rw-r--r--   1 sois supergroup         12 2021-11-04 14:02 /test1Dir/copy_sample.txt
+-rw-r--r--   1 sois supergroup          0 2021-10-29 14:49 /test1Dir/new.txt
+
+sois@sois-VirtualBox:~$ hdfs dfs -ls /test1Dir/backup
+Found 2 items
+-rw-r--r--   1 sois supergroup         12 2021-11-04 14:41 /test1Dir/backup/copy_sample.txt
+-rw-r--r--   1 sois supergroup         12 2021-10-29 14:53 /test1Dir/backup/sample.txt
+sois@sois-VirtualBox:~$ 
+----------------------------------------------------------------------------
+Command 10 : hdfs dfs -rm -r <file_name/directory_name>
+
+sois@sois-VirtualBox:~$ hdfs dfs -rm -r /test1Dir/backup
+Deleted /test1Dir/backup
+sois@sois-VirtualBox:~$ hdfs dfs -ls /test1Dir
+Found 2 items
+-rw-r--r--   1 sois supergroup         12 2021-11-04 14:02 /test1Dir/copy_sample.txt
+-rw-r--r--   1 sois supergroup          0 2021-10-29 14:49 /test1Dir/new.txt
+----------------------------------------------------------------------------
+Command 11 : du
+
+-------------------Root Directory-------------------
+sois@sois-VirtualBox:~$ hdfs dfs -du  /
+0        0        /Assignment1Dir
+173993   173993   /data_retail_db
+1886796  1886796  /firstdir
+9821     9821     /partial1_db
+38619    38619    /partial_db
+12       12       /test1Dir
+2999944  2999944  /test_dir
+1800425  1800425  /tmp
+0        0        /user
+
+--------------------test1Dir--------------------------
+sois@sois-VirtualBox:~$ hdfs dfs -du /test1Dir
+12  12  /test1Dir/copy_sample.txt
+0   0   /test1Dir/new.txt
+--------------------------------------------------------------------------
+Command 12 : dus
+
+-------------------Root Directory--------------------
+sois@sois-VirtualBox:~$ hdfs dfs -du -s /
+6909610  6909610  /
+
+--------------------test1Dir--------------------------
+sois@sois-VirtualBox:~$ hdfs dfs -du -s /test1Dir
+12  12  /test1Dir
+---------------------------------------------------------------------------
+
+Command 13 : stat
+sois@sois-VirtualBox:~$ hdfs dfs -stat /test1Dir
+2021-11-04 09:23:12
+---------------------------------------------------------------------------
