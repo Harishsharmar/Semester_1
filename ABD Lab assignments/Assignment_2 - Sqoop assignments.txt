@@ -1,0 +1,297 @@
+Question 1 : Grant privileges to database(s) in MySQL :
+
+sois@sois-VirtualBox:~$ sudo mysql -u root -p
+[sudo] password for sois: 
+Enter password: 
+
+mysql> GRANT ALL PRIVILEGES ON *.* TO 'asgnmt2'@'localhost' IDENTIFIED BY 'trial';
+Query OK, 0 rows affected, 1 warning (0.02 sec)
+----------------------------------------------------------------------
+
+Question 2 : List all databases in MySQL using Sqoop :
+
+sois@sois-VirtualBox:~$ sqoop list-databases --connect jdbc:mysql://localhost?useSSL=false --username asgnmt2 --password trial
+
+2021-11-05 10:06:04,493 INFO manager.MySQLManager: Preparing to use a MySQL streaming resultset.
+Loading class `com.mysql.jdbc.Driver'. This is deprecated. The new driver class is `com.mysql.cj.jdbc.Driver'. The driver is automatically registered via the SPI and manual loading of the driver class is generally unnecessary.
+information_schema
+harish
+mysql
+performance_schema
+retail_db
+sys
+sois@sois-VirtualBox:~$ 
+-----------------------------------------------------------------------
+
+Question 3 : List tables in selected database using Sqoop
+
+sois@sois-VirtualBox:~$ sqoop list-tables --connect jdbc:mysql://localhost/retail_db?useSSL=false --username asgnmt2 --password trial
+
+2021-11-05 10:22:19,355 INFO manager.MySQLManager: Preparing to use a MySQL streaming resultset.
+Loading class `com.mysql.jdbc.Driver'. This is deprecated. The new driver class is `com.mysql.cj.jdbc.Driver'. The driver is automatically registered via the SPI and manual loading of the driver class is generally unnecessary.
+categories
+customers
+departments
+order_items
+orders
+products
+---------------------------------------------------------------------------
+
+Question 4 : Import table from Local DB to HDFS using Sqoop by Target dir method
+
+sois@sois-VirtualBox:~$ sqoop import --connect jdbc:mysql://localhost/retail_db?useSSL=false --username asgnmt2 --password trial --table orders --target-dir '/test_dir'
+
+2021-11-05 14:42:09,719 INFO mapreduce.ImportJobBase: Transferred 2.861 MB in 56.2187 seconds (52.1114 KB/sec)
+2021-11-05 14:42:09,742 INFO mapreduce.ImportJobBase: Retrieved 68883 records.
+sois@sois-VirtualBox:~$
+
+sois@sois-VirtualBox:~$ hdfs dfs -ls /
+Found 3 items
+drwxr-xr-x   - sois supergroup          0 2021-11-05 14:42 /test_dir
+drwxrwxr-x   - sois supergroup          0 2021-01-15 16:51 /tmp
+drwxr-xr-x   - sois supergroup          0 2021-01-15 16:26 /user
+
+sois@sois-VirtualBox:~$ hdfs dfs -ls /test_dir
+Found 5 items
+-rw-r--r--   1 sois supergroup          0 2021-11-05 14:42 /test_dir/_SUCCESS
+-rw-r--r--   1 sois supergroup     741614 2021-11-05 14:42 /test_dir/part-m-00000
+-rw-r--r--   1 sois supergroup     753022 2021-11-05 14:42 /test_dir/part-m-00001
+-rw-r--r--   1 sois supergroup     752368 2021-11-05 14:42 /test_dir/part-m-00002
+-rw-r--r--   1 sois supergroup     752940 2021-11-05 14:42 /test_dir/part-m-00003
+
+---------------------------------------------------------------------------
+
+Question 5 : Import table from Local DB to HDFS using Sqoop by Warehouse dir method
+
+sois@sois-VirtualBox:~$ sqoop import --connect jdbc:mysql://localhost/retail_db?useSSL=false --username asgnmt2 --password trial --table orders --warehouse-dir '/test1_dir'
+
+2021-11-05 14:49:26,319 INFO mapreduce.ImportJobBase: Transferred 2.861 MB in 43.1223 seconds (67.9378 KB/sec)
+2021-11-05 14:49:26,332 INFO mapreduce.ImportJobBase: Retrieved 68883 records.
+
+sois@sois-VirtualBox:~$ hdfs dfs -ls /
+Found 4 items
+drwxr-xr-x   - sois supergroup          0 2021-11-05 14:48 /test1_dir
+drwxr-xr-x   - sois supergroup          0 2021-11-05 14:42 /test_dir
+drwxrwxr-x   - sois supergroup          0 2021-01-15 16:51 /tmp
+drwxr-xr-x   - sois supergroup          0 2021-01-15 16:26 /user
+
+sois@sois-VirtualBox:~$ hdfs dfs -ls /test1_dir
+Found 1 items
+drwxr-xr-x   - sois supergroup          0 2021-11-05 14:49 /test1_dir/orders
+
+sois@sois-VirtualBox:~$ hdfs dfs -ls /test1_dir/orders
+Found 5 items
+-rw-r--r--   1 sois supergroup          0 2021-11-05 14:49 /test1_dir/orders/_SUCCESS
+-rw-r--r--   1 sois supergroup     741614 2021-11-05 14:49 /test1_dir/orders/part-m-00000
+-rw-r--r--   1 sois supergroup     753022 2021-11-05 14:49 /test1_dir/orders/part-m-00001
+-rw-r--r--   1 sois supergroup     752368 2021-11-05 14:49 /test1_dir/orders/part-m-00002
+-rw-r--r--   1 sois supergroup     752940 2021-11-05 14:49 /test1_dir/orders/part-m-00003
+sois@sois-VirtualBox:~$
+--------------------------------------------------------------------------
+
+Question 6 : Imported selected data from specified table in local DB to HDFS
+
+sois@sois-VirtualBox:~$ sqoop import --connect jdbc:mysql://localhost/retail_db?useSSL=false --username asgnmt2 --password trial --table orders --target-dir '/partial_db' --where "order_status='CLOSED'"
+
+2021-11-05 16:51:28,389 INFO mapreduce.Job:  map 0% reduce 0%
+2021-11-05 16:51:50,667 INFO mapreduce.Job:  map 25% reduce 0%
+2021-11-05 16:51:52,677 INFO mapreduce.Job:  map 50% reduce 0%
+2021-11-05 16:51:53,682 INFO mapreduce.Job:  map 75% reduce 0%
+2021-11-05 16:51:54,688 INFO mapreduce.Job:  map 100% reduce 0%
+2021-11-05 16:51:54,723 INFO mapreduce.Job: Job job_1636109720246_0004 completed successfully
+
+2021-11-05 16:51:54,895 INFO mapreduce.ImportJobBase: Transferred 294.7559 KB in 42.6935 seconds (6.904 KB/sec)
+2021-11-05 16:51:54,903 INFO mapreduce.ImportJobBase: Retrieved 7556 records.
+sois@sois-VirtualBox:~$ hdfs dfs -ls /
+Found 5 items
+drwxr-xr-x   - sois supergroup          0 2021-11-05 16:51 /partial_db
+drwxr-xr-x   - sois supergroup          0 2021-11-05 14:48 /test1_dir
+drwxr-xr-x   - sois supergroup          0 2021-11-05 14:42 /test_dir
+drwxrwxr-x   - sois supergroup          0 2021-01-15 16:51 /tmp
+drwxr-xr-x   - sois supergroup          0 2021-01-15 16:26 /user
+
+sois@sois-VirtualBox:~$ hdfs dfs -ls /partial_db
+Found 5 items
+-rw-r--r--   1 sois supergroup          0 2021-11-05 16:51 /partial_db/_SUCCESS
+-rw-r--r--   1 sois supergroup      76682 2021-11-05 16:51 /partial_db/part-m-00000
+-rw-r--r--   1 sois supergroup      77365 2021-11-05 16:51 /partial_db/part-m-00001
+-rw-r--r--   1 sois supergroup      72896 2021-11-05 16:51 /partial_db/part-m-00002
+-rw-r--r--   1 sois supergroup      74887 2021-11-05 16:51 /partial_db/part-m-00003
+-------------------------------------------------------------------------- 
+
+Question 7 : Import only selected fields (columns) from local table to HDFS
+
+sois@sois-VirtualBox:~$ sqoop import --connect jdbc:mysql://localhost/retail_db?useSSL=false --username asgnmt2 --password trial --columns order_id,order_customer_id --table orders --target-dir '/selected_columns_retail_db'
+
+2021-11-06 12:12:41,035 INFO mapreduce.Job:  map 0% reduce 0%
+2021-11-06 12:13:05,487 INFO mapreduce.Job:  map 25% reduce 0%
+2021-11-06 12:13:06,497 INFO mapreduce.Job:  map 50% reduce 0%
+2021-11-06 12:13:07,502 INFO mapreduce.Job:  map 75% reduce 0%
+2021-11-06 12:13:08,513 INFO mapreduce.Job:  map 100% reduce 0%
+2021-11-06 12:13:08,543 INFO mapreduce.Job: Job job_1636175091006_0007 completed successfully
+2021-11-06 12:13:08,760 INFO mapreduce.ImportJobBase: Transferred 736.3779 KB in 43.5113 seconds (16.9238 KB/sec)
+2021-11-06 12:13:08,768 INFO mapreduce.ImportJobBase: Retrieved 68883 records.
+
+sois@sois-VirtualBox:~$ hdfs dfs -ls /
+Found 7 items
+drwxr-xr-x   - sois supergroup          0 2021-11-06 10:53 /full_retail_db
+drwxr-xr-x   - sois supergroup          0 2021-11-05 16:51 /partial_db
+drwxr-xr-x   - sois supergroup          0 2021-11-06 12:13 /selected_columns_retail_db
+drwxr-xr-x   - sois supergroup          0 2021-11-05 14:48 /test1_dir
+drwxr-xr-x   - sois supergroup          0 2021-11-05 14:42 /test_dir
+drwxrwxr-x   - sois supergroup          0 2021-01-15 16:51 /tmp
+drwxr-xr-x   - sois supergroup          0 2021-01-15 16:26 /user
+
+sois@sois-VirtualBox:~$ hdfs dfs -ls /selected_columns_retail_db
+Found 5 items
+-rw-r--r--   1 sois supergroup          0 2021-11-06 12:13 /selected_columns_retail_db/_SUCCESS
+-rw-r--r--   1 sois supergroup     180100 2021-11-06 12:13 /selected_columns_retail_db/part-m-00000
+-rw-r--r--   1 sois supergroup     191247 2021-11-06 12:13 /selected_columns_retail_db/part-m-00001
+-rw-r--r--   1 sois supergroup     191374 2021-11-06 12:13 /selected_columns_retail_db/part-m-00002
+-rw-r--r--   1 sois supergroup     191330 2021-11-06 12:13 /selected_columns_retail_db/part-m-00003
+--------------------------------------------------------------------------
+
+Question 8 : Import all tables present in Local DB to HDFS
+
+sois@sois-VirtualBox:~$ hdfs dfs -mkdir /full_retail_db
+sois@sois-VirtualBox:~$ hdfs dfs -ls /
+Found 6 items
+drwxr-xr-x   - sois supergroup          0 2021-11-06 10:46 /full_retail_db
+drwxr-xr-x   - sois supergroup          0 2021-11-05 16:51 /partial_db
+drwxr-xr-x   - sois supergroup          0 2021-11-05 14:48 /test1_dir
+drwxr-xr-x   - sois supergroup          0 2021-11-05 14:42 /test_dir
+drwxrwxr-x   - sois supergroup          0 2021-01-15 16:51 /tmp
+drwxr-xr-x   - sois supergroup          0 2021-01-15 16:26 /user
+
+sois@sois-VirtualBox:~$ sqoop import-all-tables --connect jdbc:mysql://localhost/retail_db?useSSL=false --username asgnmt2 --password trial --warehouse-dir '/full_retail_db'
+
+2021-11-06 10:53:49,066 INFO mapreduce.ImportJobBase: Retrieved 1345 records.
+
+sois@sois-VirtualBox:~$ hdfs dfs -ls /
+Found 6 items
+drwxr-xr-x   - sois supergroup          0 2021-11-06 10:53 /full_retail_db
+drwxr-xr-x   - sois supergroup          0 2021-11-05 16:51 /partial_db
+drwxr-xr-x   - sois supergroup          0 2021-11-05 14:48 /test1_dir
+drwxr-xr-x   - sois supergroup          0 2021-11-05 14:42 /test_dir
+drwxrwxr-x   - sois supergroup          0 2021-01-15 16:51 /tmp
+drwxr-xr-x   - sois supergroup          0 2021-01-15 16:26 /user
+sois@sois-VirtualBox:~$ hdfs dfs -ls /full_retail_db
+Found 6 items
+drwxr-xr-x   - sois supergroup          0 2021-11-06 10:49 /full_retail_db/categories
+drwxr-xr-x   - sois supergroup          0 2021-11-06 10:50 /full_retail_db/customers
+drwxr-xr-x   - sois supergroup          0 2021-11-06 10:51 /full_retail_db/departments
+drwxr-xr-x   - sois supergroup          0 2021-11-06 10:52 /full_retail_db/order_items
+drwxr-xr-x   - sois supergroup          0 2021-11-06 10:53 /full_retail_db/orders
+drwxr-xr-x   - sois supergroup          0 2021-11-06 10:53 /full_retail_db/products
+
+sois@sois-VirtualBox:~$ hdfs dfs -ls /full_retail_db/categories
+Found 5 items
+-rw-r--r--   1 sois supergroup          0 2021-11-06 10:49 /full_retail_db/categories/_SUCCESS
+-rw-r--r--   1 sois supergroup        271 2021-11-06 10:49 /full_retail_db/categories/part-m-00000
+-rw-r--r--   1 sois supergroup        263 2021-11-06 10:49 /full_retail_db/categories/part-m-00001
+-rw-r--r--   1 sois supergroup        266 2021-11-06 10:49 /full_retail_db/categories/part-m-00002
+-rw-r--r--   1 sois supergroup        229 2021-11-06 10:49 /full_retail_db/categories/part-m-00003
+
+sois@sois-VirtualBox:~$ hdfs dfs -ls /full_retail_db/orders
+Found 5 items
+-rw-r--r--   1 sois supergroup          0 2021-11-06 10:53 /full_retail_db/orders/_SUCCESS
+-rw-r--r--   1 sois supergroup     741614 2021-11-06 10:52 /full_retail_db/orders/part-m-00000
+-rw-r--r--   1 sois supergroup     753022 2021-11-06 10:53 /full_retail_db/orders/part-m-00001
+-rw-r--r--   1 sois supergroup     752368 2021-11-06 10:53 /full_retail_db/orders/part-m-00002
+-rw-r--r--   1 sois supergroup     752940 2021-11-06 10:53 /full_retail_db/orders/part-m-00003
+--------------------------------------------------------------------------
+
+Question 9 : Import all table excluding specified table(s) into HDFS
+
+sois@sois-VirtualBox:~$ hdfs dfs -mkdir /selected_columns_excluded_retail_db
+sois@sois-VirtualBox:~$ hdfs dfs -ls /
+Found 8 items
+drwxr-xr-x   - sois supergroup          0 2021-11-06 10:53 /full_retail_db
+drwxr-xr-x   - sois supergroup          0 2021-11-05 16:51 /partial_db
+drwxr-xr-x   - sois supergroup          0 2021-11-06 12:38 /selected_columns_excluded_retail_db
+drwxr-xr-x   - sois supergroup          0 2021-11-06 12:13 /selected_columns_retail_db
+drwxr-xr-x   - sois supergroup          0 2021-11-05 14:48 /test1_dir
+drwxr-xr-x   - sois supergroup          0 2021-11-05 14:42 /test_dir
+drwxrwxr-x   - sois supergroup          0 2021-01-15 16:51 /tmp
+drwxr-xr-x   - sois supergroup          0 2021-01-15 16:26 /user
+
+sois@sois-VirtualBox:~$ sqoop import-all-tables --connect jdbc:mysql://localhost/retail_db?useSSL=false --username asgnmt2 --password trial --warehouse-dir '/selected_columns_excluded_retail_db' --exclude-tables orders,customers
+
+2021-11-06 12:48:56,259 INFO mapreduce.ImportJobBase: Retrieved 1345 records.
+----------All tables are copied except orders,customers------------------
+sois@sois-VirtualBox:~$ hdfs dfs -ls /selected_columns_excluded_retail_db
+Found 4 items
+drwxr-xr-x   - sois supergroup          0 2021-11-06 12:46 /selected_columns_excluded_retail_db/categories
+drwxr-xr-x   - sois supergroup          0 2021-11-06 12:47 /selected_columns_excluded_retail_db/departments
+drwxr-xr-x   - sois supergroup          0 2021-11-06 12:48 /selected_columns_excluded_retail_db/order_items
+drwxr-xr-x   - sois supergroup          0 2021-11-06 12:48 /selected_columns_excluded_retail_db/products
+----------------------------------------------------------------------------
+
+Question 10 : Export table present in HDFS to Local DB
+
+-----Creating a new folder  'asg2_exp' to copy categories table to HDFS-----
+sois@sois-VirtualBox:~$ hdfs dfs -ls /
+sois@sois-VirtualBox:~$ hdfs dfs -mkdir /asg2_exp
+sois@sois-VirtualBox:~$ hdfs dfs -ls /
+
+-----import categories table to asg2_exp folder in HDFS-----------
+
+sois@sois-VirtualBox:~$ sqoop import --connect jdbc:mysql://localhost/retail_db?useSSL=false --username asgnmt2 --password trial --table categories --warehouse-dir '/asg2_exp'
+
+2021-11-08 11:46:11,463 INFO mapreduce.Job:  map 0% reduce 0%
+2021-11-08 11:46:32,776 INFO mapreduce.Job:  map 25% reduce 0%
+2021-11-08 11:46:34,812 INFO mapreduce.Job:  map 50% reduce 0%
+2021-11-08 11:46:35,817 INFO mapreduce.Job:  map 75% reduce 0%
+2021-11-08 11:46:36,823 INFO mapreduce.Job:  map 100% reduce 0%
+2021-11-08 11:46:36,848 INFO mapreduce.Job: Job job_1636343141742_0004 completed successfully
+2021-11-08 11:46:37,054 INFO mapreduce.ImportJobBase: Transferred 1.0049 KB in 41.9488 seconds (24.5299 bytes/sec)
+2021-11-08 11:46:37,062 INFO mapreduce.ImportJobBase: Retrieved 58 records.
+
+sois@sois-VirtualBox:~$ hdfs dfs -ls /asg2_exp
+Found 1 items
+drwxr-xr-x   - sois supergroup          0 2021-11-08 11:46 /asg2_exp/categories
+sois@sois-VirtualBox:~$ hdfs dfs -ls /asg2_exp/categories
+Found 5 items
+-rw-r--r--   1 sois supergroup          0 2021-11-08 11:46 /asg2_exp/categories/_SUCCESS
+-rw-r--r--   1 sois supergroup        271 2021-11-08 11:46 /asg2_exp/categories/part-m-00000
+-rw-r--r--   1 sois supergroup        263 2021-11-08 11:46 /asg2_exp/categories/part-m-00001
+-rw-r--r--   1 sois supergroup        266 2021-11-08 11:46 /asg2_exp/categories/part-m-00002
+-rw-r--r--   1 sois supergroup        229 2021-11-08 11:46 /asg2_exp/categories/part-m-00003
+
+-----Create a new table in mySQL having same templete as categories table-----
+mysql> show databases;
+mysql> use retail_db;
+mysql> show tables;
+
+mysql> CREATE TABLE test_categories1 LIKE categories;
+Query OK, 0 rows affected (0.07 sec)
+
+mysql> show tables;
++---------------------+
+| Tables_in_retail_db |
++---------------------+
+| categories          |
+| customers           |
+| departments         |
+| order_items         |
+| orders              |
+| products            |
+| test_categories     |
+| test_categories1    |
++---------------------+
+8 rows in set (0.00 sec)
+
+mysql> select * from test_categories1;
+Empty set (0.00 sec)
+
+----------Export from HDFS to Local DB(test_categories1)-----------------
+sois@sois-VirtualBox:~$ sqoop export --connect jdbc:mysql://localhost/retail_db?useSSl=false --username asgnmt2 --password trial --table test_categories1 --export-dir '/asg2_exp/categories'
+
+2021-11-08 11:57:48,180 INFO mapreduce.ExportJobBase: Transferred 2.1523 KB in 42.593 seconds (51.7456 bytes/sec)
+2021-11-08 11:57:48,194 INFO mapreduce.ExportJobBase: Exported 58 records.
+
+mysql> select * from test_categories1;
+58 rows in set (0.00 sec)
+
+
+
