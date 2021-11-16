@@ -1,0 +1,224 @@
+Question 1 : Create Database in Hive
+hive> show databases;
+OK
+db1
+default
+
+hive> create database asg3
+    > ;
+OK
+Time taken: 0.417 seconds
+hive> show databases;
+OK
+asg3
+db1
+default
+Time taken: 0.087 seconds, Fetched: 3 row(s)
+--------------------------------------------------------------
+
+Question 2 : Create hive table inside database
+*----Create table having same template as categories table in retail_db----*
+
+hive> CREATE TABLE asg3.`categories` (
+    >   `category_id` int,
+    >   `category_department_id` int,
+    >   `category_name` string
+    >   
+    > ) row format delimited fields terminated by ',' stored as textfile;
+OK
+Time taken: 1.287 seconds
+hive> show databases;
+OK
+asg3
+db1
+default
+Time taken: 0.09 seconds, Fetched: 3 row(s)
+hive> show tables;
+OK
+student
+Time taken: 0.121 seconds, Fetched: 1 row(s)
+hive> use asg3
+    > ;
+OK
+Time taken: 0.088 seconds
+hive> show tables;
+OK
+categories
+Time taken: 0.117 seconds, Fetched: 1 row(s)
+
+*-----categories table is created inside asg3 database-------*
+
+---------------------------------------------------------------------------
+Question 3 : Load data into Hive table
+
+*---Import Categories table into HDFS ----*
+sois@sois-VirtualBox:~$ hdfs dfs -ls /
+Found 3 items
+drwxr-xr-x   - sois supergroup          0 2021-11-10 13:50 /asg_3_cust
+drwxrwxr-x   - sois supergroup          0 2021-01-15 16:51 /tmp
+drwxr-xr-x   - sois supergroup          0 2021-01-15 16:26 /user
+sois@sois-VirtualBox:~$ hdfs dfs -ls /asg_3_cust
+Found 5 items
+-rw-r--r--   1 sois supergroup          0 2021-11-10 13:50 /asg_3_cust/_SUCCESS
+-rw-r--r--   1 sois supergroup     237145 2021-11-10 13:49 /asg_3_cust/part-m-00000
+-rw-r--r--   1 sois supergroup     237965 2021-11-10 13:50 /asg_3_cust/part-m-00001
+-rw-r--r--   1 sois supergroup     238092 2021-11-10 13:50 /asg_3_cust/part-m-00002
+-rw-r--r--   1 sois supergroup     240323 2021-11-10 13:50 /asg_3_cust/part-m-00003
+
+*---- Now we shall load data into Hive table----*
+hive> load data inpath '/asg_3_cust' into table asg3.categories;
+Loading data to table asg3.categories
+OK
+Time taken: 3.09 seconds
+
+hive>select * from categories
+----------------------------------------------------------------
+Question 4 : Load data from local file into Hive table (Hint : Use keyword 'local' in load data command)
+
+-------Create a local structured file--------
+sois@sois-VirtualBox:~$ gedit asg3_local.txt
+
+Harish,BDA,001
+Girish,AIML,002
+Mahesh,VLSI,003
+Suresh,ESD,004
+Satish,CC,005
+Nikhil,BDA,006
+Sampath,AIML,007
+Kiran,MIT,008
+Manoj,MSIS,009
+Kumar,AIML,010
+
+--------Create a table which matches the created file attributes-----
+hive> create table asg3.new_table(Name string, Branch string, Roll_No int) row format delimited fields terminated by ',' stored as textfile;
+OK
+Time taken: 0.921 seconds
+hive> show tables;
+OK
+categories
+new_table
+Time taken: 0.07 seconds, Fetched: 2 row(s)
+
+----------Load data from local file to Hive table-----
+hive> load data local inpath '/home/sois/asg3_local.txt' into table asg3.new_table;
+Loading data to table asg3.new_table
+OK
+Time taken: 0.465 seconds
+hive> select * from new_table;
+OK
+Harish	BDA	1
+Girish	AIML	2
+Mahesh	VLSI	3
+Suresh	ESD	4
+Satish	CC	5
+Nikhil	BDA	6
+Sampath	AIML	7
+Kiran	MIT	8
+Manoj	MSIS	9
+Kumar	AIML	10
+Time taken: 0.265 seconds, Fetched: 10 row(s)
+---------------------------------------------------------------------
+
+Question 5 : Run queries for customer table for following :(A)(B)(C)(D)
+
+---------First make sure that customer table is present in Hive. If not create it and import the data from retail_db----------
+sois@sois-VirtualBox:~$ sqoop import --connect jdbc:mysql://localhost/retail_db?useSSL=false --username asgnmt2 --password trial --table customers --target-dir '/cats_asg3.5'
+
+mysql>show create table retail_db.customers; 
+hive>CREATE TABLE asg3.`customers` (
+  `customer_id` int, 
+  `customer_fname` string,
+  `customer_lname` string,
+  `customer_email` string,
+  `customer_password` string,
+  `customer_street` string,
+  `customer_city` string,
+  `customer_state` string,
+  `customer_zipcode` string
+) row forma delimited fields terminated by ',' stored as textfile;
+
+hive>load data inpath '/cats_asg3.5' into table asg3.customers;
+-------------
+A) Find unique states :
+hive> select distinct customer_state from customers;
+
+2021-11-12 19:48:02,691 Stage-1 map = 0%,  reduce = 0%
+2021-11-12 19:48:12,190 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 2.04 sec
+2021-11-12 19:48:21,599 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 3.83 sec
+MapReduce Total cumulative CPU time: 3 seconds 830 msec
+Ended Job = job_1636709896985_0010
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 3.83 sec   HDFS Read: 967099 HDFS Write: 747 SUCCESS
+Total MapReduce CPU Time Spent: 3 seconds 830 msec
+OK
+AL
+AR
+AZ
+CA
+.
+.
+.
+Time taken: 33.877 seconds, Fetched: 44 row(s)
+
+B) Find Number of customers from each state :
+---------------------
+hive> select customer_state from customers group by customer_state;
+...
+TN
+TX
+UT
+VA
+WA
+WI
+WV
+Time taken: 32.546 seconds, Fetched: 44 row(s)
+----------------------
+hive> select customer_state,count(*) from customers group by customer_state;
+......
+TX	635
+UT	69
+VA	136
+WA	72
+WI	64
+WV	16
+Time taken: 31.793 seconds, Fetched: 44 row(s)
+
+C) List and count number of unique "fnames"
+---------------------
+hive> select count(distinct customer_fname) from asg3.customers;
+2021-11-12 20:01:22,140 Stage-1 map = 0%,  reduce = 0%
+2021-11-12 20:01:30,487 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 1.99 sec
+2021-11-12 20:01:39,865 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 3.88 sec
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 3.88 sec   HDFS Read: 963789 HDFS Write: 103 SUCCESS
+Total MapReduce CPU Time Spent: 3 seconds 880 msec
+OK
+200
+Time taken: 32.319 seconds, Fetched: 1 row(s)
+---------------------
+hive> select customer_fname,count(*) from customers group by customer_fname;
+......
+Victoria	40
+Vincent	14
+Virginia	41
+Walter	31
+Wayne	29
+William	98
+Willie	28
+Zachary	34
+Time taken: 31.207 seconds, Fetched: 200 row(s)
+
+D) List and count number of unique "cities"
+hive> select customer_city,count(*) from customers group by customer_city;
+......
+Woonsocket	6
+Wyandotte	12
+Wyoming	12
+Yauco	8
+Yonkers	9
+York	18
+Ypsilanti	12
+Yuma	7
+Zanesville	8
+Time taken: 33.613 seconds, Fetched: 562 row(s)
+
