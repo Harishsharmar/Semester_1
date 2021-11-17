@@ -1,0 +1,94 @@
+# depslib dependency file v1.0
+1635856868 source:c:\users\hari\desktop\assignment_3\logic.c
+	<stdio.h>
+	<stdlib.h>
+	<assert.h>
+	<stdint.h>
+	"logic.h"
+
+1635854033 c:\users\hari\desktop\assignment_3\logic.h
+	<stdint.h>
+	<assert.h>
+
+1635861915 source:c:\users\hari\desktop\assignment_3\main.c
+	<stdio.h>
+	<stdlib.h>
+	<assert.h>
+	<stdint.h>
+	"logic.h"
+
+1636976381 source:c:\users\msis\downloads\assignment_3\assignment_3\logic.c
+	<stdio.h>
+	<stdlib.h>
+	<assert.h>
+	<stdint.h>
+	"logic.h"
+
+1637066105 c:\users\msis\downloads\assignment_3\assignment_3\logic.h
+	<stdint.h>
+	<assert.h>
+
+1637065697 source:c:\users\msis\downloads\assignment_3\assignment_3\main.c
+	<stdio.h>
+	<stdlib.h>
+	<assert.h>
+	<stdint.h>
+	"logic.h"
+
+1637065697 source:c:\users\msis\downloads\assignment_3\assignment_3\logic_6_to_10.c
+	<stdio.h>
+	<stdlib.h>
+	<assert.h>
+	<stdint.h>
+	"logic.h"
+
+1637056440 source:c:\users\hari\downloads\assignment_3\assignment_3\logic.c
+	<stdio.h>
+	<stdlib.h>
+	<assert.h>
+	<stdint.h>
+	"logic.h"
+
+1637081506 c:\users\hari\downloads\assignment_3\assignment_3\logic.h
+	<stdint.h>
+	<assert.h>
+
+1637081532 source:c:\users\hari\downloads\assignment_3\assignment_3\main.c
+	<stdio.h>
+	<stdlib.h>
+	<assert.h>
+	<stdint.h>
+	"logic.h"
+
+1637081630 source:c:\users\hari\downloads\assignment_3\assignment_3\logic_6_to_10.c
+	<stdio.h>
+	<stdlib.h>
+	<assert.h>
+	<stdint.h>
+	"logic.h"
+
+1637120628 source:c:\users\msis\downloads\assignment_3\logic.c
+	<stdio.h>
+	<stdlib.h>
+	<assert.h>
+	<stdint.h>
+	"logic.h"
+
+1637125525 c:\users\msis\downloads\assignment_3\logic.h
+	<stdint.h>
+	<assert.h>
+
+1637125681 source:c:\users\msis\downloads\assignment_3\main.c
+	<stdio.h>
+	<stdlib.h>
+	<assert.h>
+	<stdint.h>
+	"logic.h"
+
+1637125476 source:c:\users\msis\downloads\assignment_3\logic_6_to_10.c
+	<stdio.h>
+	<stdlib.h>
+	<assert.h>
+	<stdint.h>
+	"logic.h"
+
