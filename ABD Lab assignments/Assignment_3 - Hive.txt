@@ -140,6 +140,10 @@ hive>CREATE TABLE asg3.`customers` (
 hive>load data inpath '/cats_asg3.5' into table asg3.customers;
 -------------
 A) Find unique states :
+hive> select count(distinct customer_state) from customers;
+OK
+44
+
 hive> select distinct customer_state from customers;
 
 2021-11-12 19:48:02,691 Stage-1 map = 0%,  reduce = 0%
